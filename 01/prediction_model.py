@@ -1,6 +1,6 @@
 class SomeModel:
     def predict(self, message: str) -> float:
-        ...
+        return len(message) % 10 / 10
 
 
 def predict_message_mood(
