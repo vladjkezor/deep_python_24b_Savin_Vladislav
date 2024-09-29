@@ -1,7 +1,6 @@
 class SomeModel:
     def predict(self, message: str) -> float:
-        # реализация не важна
-        pass
+        ...
 
 
 def predict_message_mood(
