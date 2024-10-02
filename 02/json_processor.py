@@ -26,4 +26,3 @@ def process_json(
                 if token.lower() in value.lower():
                     if callback:
                         callback(key, token)
-
