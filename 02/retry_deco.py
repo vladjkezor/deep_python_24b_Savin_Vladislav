@@ -12,17 +12,17 @@ def retry_deco(retries=3, exceptions=None):
                 try:
                     result = func(*args, **kwargs)
                     print(
-                        f' run "{func.__name__}" with',
-                        f'positional args = {args},' if args else "",
-                        f'keyword kwargs = {kwargs},' if kwargs else "",
-                        f'{attempt=}, {result=}')
+                        f' run "{func.__name__}", ',
+                        f'positional args = {args}, ' if args else "",
+                        f'keyword kwargs = {kwargs}, ' if kwargs else "",
+                        f'{attempt=}, {result=}', sep="")
                     return result
                 except Exception as e:
                     print(
-                        f' run "{func.__name__}" with',
-                        f'positional args = {args},' if args else "",
-                        f'keyword kwargs = {kwargs},' if kwargs else "",
-                        f'{attempt=}, exception = {type(e).__name__}')
+                        f' run "{func.__name__}", ',
+                        f'positional args = {args}, ' if args else "",
+                        f'keyword kwargs = {kwargs}, ' if kwargs else "",
+                        f'{attempt=}, exception = {type(e).__name__}', sep="")
                     if any(isinstance(e, exc) for exc in exceptions):
                         break
             return None
