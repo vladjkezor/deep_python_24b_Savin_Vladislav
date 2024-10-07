@@ -101,14 +101,16 @@ class TestReaderWithFilter(unittest.TestCase):
 
     def test_full_line_match(self):
         file_name = 'test_file.txt'
-        key_words = ['banana is red']
-        stop_words = ['stop key is key']
+        key_words = ['banana is red', 'key2']
+        stop_words = ['stop key is key',
+                      'stop is full line with one_word key2]']
 
         with open(file_name, 'w', encoding='utf-8') as f:
             f.write('banana is red\n')
             f.write('stop key is key\n')
+            f.write('stop is full line with one_word key2\n')
 
-        expected = []
+        expected = ['stop is full line with one_word key2']
 
         result = list(reader_with_filter(file_name, key_words, stop_words))
         self.assertEqual(expected, result)
