@@ -51,6 +51,7 @@ class TestCustomList(unittest.TestCase):
 
         self.assertEqual(empty_cst_ls + number, CustomList([]))
         self.assertEqual(number + empty_cst_ls, CustomList([]))
+
     def test_sub(self):
         custom_ls1 = CustomList([5, 1, 3, 7])
         custom_ls2 = CustomList([1, 2, 7, 8])
