@@ -98,6 +98,149 @@ class TestCustomList(unittest.TestCase):
         self.assertEqual(custom_ls3 - number, CustomList([7]))
         self.assertEqual(number - custom_ls3, CustomList([-7]))
 
+    def test_less_than(self):
+        custom_ls1 = CustomList([1, 2, 3])
+        custom_ls2 = CustomList([0, 1, 2])
+        custom_ls3 = CustomList([5])
+        custom_ls4 = CustomList([15])
+        custom_ls5 = CustomList([])
+        custom_ls6 = CustomList([4, 1, 1])
+
+        self.assertTrue(custom_ls2 < custom_ls1)
+        self.assertTrue(custom_ls1 < custom_ls4)
+        self.assertTrue(custom_ls3 < custom_ls4)
+        self.assertTrue(custom_ls5 < custom_ls2)
+
+        self.assertFalse(custom_ls1 < custom_ls2)
+        self.assertFalse(custom_ls4 < custom_ls3)
+        self.assertFalse(custom_ls4 < custom_ls2)
+        self.assertFalse(custom_ls1 < custom_ls3)
+        self.assertFalse(custom_ls1 < custom_ls6)
+
+    def test_greater_than(self):
+        custom_ls1 = CustomList([1, 2, 3])
+        custom_ls2 = CustomList([0, 1, 2])
+        custom_ls3 = CustomList([5])
+        custom_ls4 = CustomList([15])
+        custom_ls5 = CustomList([])
+        custom_ls6 = CustomList([4, 1, 1])
+
+        self.assertTrue(custom_ls1 > custom_ls2)
+        self.assertTrue(custom_ls4 > custom_ls1)
+        self.assertTrue(custom_ls4 > custom_ls3)
+        self.assertTrue(custom_ls2 > custom_ls5)
+
+        self.assertFalse(custom_ls2 > custom_ls1)
+        self.assertFalse(custom_ls3 > custom_ls4)
+        self.assertFalse(custom_ls2 > custom_ls4)
+        self.assertFalse(custom_ls3 > custom_ls1)
+        self.assertFalse(custom_ls1 > custom_ls6)
+
+    def test_less_equal(self):
+        custom_ls1 = CustomList([1, 2, 2])
+        custom_ls2 = CustomList([3, 2, 1])
+        custom_ls3 = CustomList([6])
+        custom_ls4 = CustomList([5])
+        empty_ls = CustomList([])
+
+        self.assertTrue(custom_ls1 <= custom_ls2)
+        self.assertTrue(custom_ls1 <= custom_ls3)
+        self.assertTrue(custom_ls4 <= custom_ls3)
+        self.assertTrue(empty_ls <= custom_ls2)
+
+        self.assertFalse(custom_ls2 <= custom_ls1)
+        self.assertFalse(custom_ls3 <= custom_ls1)
+        self.assertFalse(custom_ls1 <= empty_ls)
+
+    def test_greater_equal(self):
+        custom_ls1 = CustomList([2, 6])
+        custom_ls2 = CustomList([3, 2, 1])
+        custom_ls3 = CustomList([2, 1, 3])
+        custom_ls4 = CustomList([6])
+        custom_ls5 = CustomList([5])
+        empty_ls = CustomList([])
+
+        self.assertTrue(custom_ls1 >= custom_ls2)
+        self.assertTrue(custom_ls1 >= custom_ls4)
+        self.assertTrue(custom_ls2 >= custom_ls3)
+        self.assertTrue(custom_ls5 >= empty_ls)
+
+        self.assertFalse(custom_ls2 >= custom_ls1)
+        self.assertFalse(custom_ls5 >= custom_ls4)
+        self.assertFalse(empty_ls >= custom_ls3)
+
+    def test_equal(self):
+        custom_ls1 = CustomList([1, 2, 3])
+        custom_ls2 = CustomList([3, 2, 1])
+        custom_ls3 = CustomList([6])
+        custom_ls4 = CustomList([5, 3])
+        empty_ls = CustomList([])
+
+        self.assertTrue(custom_ls1 == custom_ls2)
+        self.assertTrue(custom_ls1 == custom_ls3)
+        self.assertTrue(empty_ls == CustomList([]))
+
+        self.assertFalse(custom_ls4 == custom_ls2)
+        self.assertFalse(empty_ls == custom_ls3)
+
+    def test_not_equal(self):
+        custom_ls1 = CustomList([1, 2, 3])
+        custom_ls2 = CustomList([2, 2, 1])
+        custom_ls3 = CustomList([8])
+        custom_ls4 = CustomList([5, 3])
+        empty_ls = CustomList([])
+
+        self.assertTrue(custom_ls1 != custom_ls2)
+        self.assertTrue(custom_ls1 != custom_ls3)
+        self.assertTrue(empty_ls != custom_ls2)
+
+        self.assertFalse(custom_ls4 != custom_ls3)
+        self.assertFalse(empty_ls != CustomList([]))
+
+    def test_str(self):
+        custom_ls1 = CustomList([1, 2, 3])
+        custom_ls2 = CustomList([8])
+        custom_ls3 = CustomList([-5, -14])
+        empty_ls = CustomList([])
+
+        self.assertEqual(str(custom_ls1), '[1, 2, 3] sum = 6')
+        self.assertEqual(str(custom_ls2), '[8] sum = 8')
+        self.assertEqual(str(custom_ls3), '[-5, -14] sum = -19')
+        self.assertEqual(str(empty_ls), '[] sum = 0')
+
+    def test_comparison_invalid_type(self):
+        custom_ls1 = CustomList([1, 2, 3])
+        with self.assertRaises(TypeError):
+            _ = custom_ls1 < "string"
+        with self.assertRaises(TypeError):
+            _ = custom_ls1 <= {"a": 1}
+        with self.assertRaises(TypeError):
+            _ = custom_ls1 == 100
+        with self.assertRaises(TypeError):
+            _ = custom_ls1 != [1, 2, 3]
+        with self.assertRaises(TypeError):
+            _ = custom_ls1 > "string"
+        with self.assertRaises(TypeError):
+            _ = custom_ls1 >= {"a": 1}
+
+    def test_add_invalid_type(self):
+        custom_ls1 = CustomList([1, 2, 3])
+        with self.assertRaises(TypeError):
+            _ = custom_ls1 + "string"
+        with self.assertRaises(TypeError):
+            _ = custom_ls1 + {"a": 1}
+        with self.assertRaises(TypeError):
+            _ = "string" + custom_ls1
+
+    def test_sub_invalid_type(self):
+        custom_ls1 = CustomList([1, 2, 3])
+        with self.assertRaises(TypeError):
+            _ = custom_ls1 - "string"
+        with self.assertRaises(TypeError):
+            _ = custom_ls1 - {"a": 1}
+        with self.assertRaises(TypeError):
+            _ = "string" - custom_ls1
+
 
 if __name__ == '__main__':
     unittest.main()
