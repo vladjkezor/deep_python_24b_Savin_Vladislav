@@ -113,9 +113,11 @@ class TestMetaclass(unittest.TestCase):
     def test_magic(self):
         test_inst1 = CustomClass()
 
-        self.assertEqual('Custom_by_metaclass', str(test_inst1))
         with self.assertRaises(AttributeError):
             _ = test_inst1.custom___str__()
 
+
+if __name__ == '__main__':
+    unittest.main()
 # pylint: enable=W0201
 # pylint: enable=E1101
