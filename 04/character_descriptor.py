@@ -1,8 +1,8 @@
 class BaseDescriptor:
 
     def __set_name__(self, owner, name):
-        self._name = f'_{name}'
-        self.public_name = name.capitalize()
+        self._name = f'_{name}' # pylint: disable=W0201
+        self.public_name = name.capitalize() # pylint: disable=W0201
 
     def __get__(self, instance, owner):
         if instance is None:
@@ -33,7 +33,8 @@ class Race(BaseDescriptor):
         if not isinstance(value, str):
             raise TypeError(f"{self.public_name}  name should be string")
         if value not in self.valid_races:
-            raise ValueError(f'{self.public_name} should be from {self.valid_races}')
+            raise ValueError(f'{self.public_name} should be'
+                             f' from {self.valid_races}')
 
 
 class PosInteger(BaseDescriptor):
@@ -62,6 +63,3 @@ class Character:
                 f'Раса {self.race} \n'
                 f'Здоровье {self.health} \n'
                 f'Мана {self.mana}')
-
-
-
