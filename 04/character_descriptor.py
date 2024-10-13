@@ -27,11 +27,11 @@ class String(BaseDescriptor):
 
 
 class Race(BaseDescriptor):
-    valid_races = {'Человек', 'Эльф', 'Гном', 'Орк', 'Нежить'}
+    valid_races = ['Человек', 'Эльф', 'Гном', 'Орк', 'Нежить']
 
     def validate(self, value):
         if not isinstance(value, str):
-            raise TypeError(f"{self.public_name}  name should be string")
+            raise TypeError(f"{self.public_name} name should be string")
         if value not in self.valid_races:
             raise ValueError(f'{self.public_name} should be'
                              f' from {self.valid_races}')
@@ -42,7 +42,7 @@ class PosInteger(BaseDescriptor):
     def validate(self, value):
         if not isinstance(value, int):
             raise TypeError(f'{self.public_name} should be integer')
-        if value < 0:
+        if value <= 0:
             raise ValueError(f'{self.public_name} should be positive')
 
 
