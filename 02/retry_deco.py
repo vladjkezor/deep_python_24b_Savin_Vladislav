@@ -24,7 +24,7 @@ def retry_deco(retries=3, exceptions=None):
                         f'keyword kwargs = {kwargs}, ' if kwargs else "",
                         f'{attempt=}, Normal Exception = {type(e).__name__}',
                         sep="")
-                    raise e     # pylint: disable=E0710
+                    raise e  # pylint: disable=E0710
                 except Exception as e:
                     print(
                         f'run "{func.__name__}", ',
