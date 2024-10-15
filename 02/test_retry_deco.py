@@ -82,6 +82,53 @@ class TestRetryDecorator(unittest.TestCase):
         self.assertEqual(mock_print.call_count, 1)
 
     @patch('builtins.print')
+    def test_expected_error_from_list(self, mock_print):
+        @retry_deco(2, [TypeError, ValueError, ZeroDivisionError])
+        def division(value):
+            if value is None:
+                raise ValueError
+            if not isinstance(value, int):
+                raise TypeError()
+            return 42 / value
+
+        with self.assertRaises(ValueError):
+            division(value=None)
+
+        calls = mock.call('run "division", ', '',
+                          "keyword kwargs = {'value': None}, ",
+                          'attempt=1, Normal Exception = ValueError', sep='')
+
+        self.assertEqual(mock_print.call_args, calls)
+        self.assertEqual(mock_print.call_count, 1)
+
+        mock_print.reset_mock()
+
+        with self.assertRaises(TypeError):
+            division('пятнадцать')
+
+        calls = mock.call('run "division", ',
+                          "positional args = ('пятнадцать',), ", '',
+                          'attempt=1, Normal Exception = TypeError', sep='')
+
+        self.assertEqual(mock_print.call_args, calls)
+        self.assertEqual(mock_print.call_count, 1)
+
+        mock_print.reset_mock()
+
+        with self.assertRaises(ZeroDivisionError):
+            division(0)
+
+        calls = mock.call('run "division", ',
+                          "positional args = (0,), ", '',
+                          'attempt=1, Normal Exception = ZeroDivisionError',
+                          sep='')
+
+        self.assertEqual(mock_print.call_args, calls)
+        self.assertEqual(mock_print.call_count, 1)
+
+        mock_print.reset_mock()
+
+    @patch('builtins.print')
     def test_multiple_retries(self, mock_print):
 
         @retry_deco(3)
