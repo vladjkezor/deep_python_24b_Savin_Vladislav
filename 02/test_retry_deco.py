@@ -70,11 +70,13 @@ class TestRetryDecorator(unittest.TestCase):
         self.assertEqual(mock_print.call_count, 1)
 
         mock_print.reset_mock()
-        check_int(value=None)
+
+        with self.assertRaises(ValueError):
+            check_int(value=None)
 
         calls = mock.call('run "check_int", ', '',
                           "keyword kwargs = {'value': None}, ",
-                          'attempt=1, exception = ValueError', sep='')
+                          'attempt=1, Normal Exception = ValueError', sep='')
 
         self.assertEqual(mock_print.call_args, calls)
         self.assertEqual(mock_print.call_count, 1)
@@ -90,15 +92,15 @@ class TestRetryDecorator(unittest.TestCase):
 
         calls = [mock.call('run "check_str", ', '',
                            "keyword kwargs = {'value': None}, ",
-                           'attempt=1, exception = ValueError', sep=''),
+                           'attempt=1, Exception = ValueError', sep=''),
                  mock.call('run "check_str", ', '',
                            "keyword kwargs = {'value': None}, ",
-                           'attempt=2, exception = ValueError', sep=''),
+                           'attempt=2, Exception = ValueError', sep=''),
                  mock.call('run "check_str", ', '',
                            "keyword kwargs = {'value': None}, ",
-                           'attempt=3, exception = ValueError', sep='')]
-
-        check_str(value=None)
+                           'attempt=3, Exception = ValueError', sep='')]
+        with self.assertRaises(ValueError):
+            check_str(value=None)
 
         self.assertEqual(mock_print.call_args_list, calls)
         self.assertEqual(mock_print.call_count, 3)
