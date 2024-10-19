@@ -133,6 +133,22 @@ class TestReaderWithFilter(unittest.TestCase):
 
         self.assertEqual(expected, result)
 
+    def test_one_word_line(self):
+        file_name = 'test_file.txt'
+        key_words = ['start']
+        stop_words = ['end']
+
+        with open(file_name, 'w', encoding='utf-8') as f:
+            f.write('start\n')
+            f.write('end\n')
+
+        expected = ['start']
+
+        with open(file_name, 'r', encoding='utf-8') as file_obj:
+            result = list(reader_with_filter(file_obj, key_words, stop_words))
+
+        self.assertEqual(expected, result)
+
 
 if __name__ == '__main__':
     unittest.main()
