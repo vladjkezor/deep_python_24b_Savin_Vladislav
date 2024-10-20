@@ -3,6 +3,15 @@ import unittest
 from custom_list import CustomList
 
 
+def check_equal(ls1, ls2):
+    if len(ls1) != len(ls2):
+        return False
+    for i in range(len(ls1)):
+        if ls1[i] != ls2[i]:
+            return False
+    return True
+
+
 class TestCustomList(unittest.TestCase):
     def test_add(self):
         custom_ls1 = CustomList([5, 1, 3, 7])
@@ -17,40 +26,56 @@ class TestCustomList(unittest.TestCase):
         number = 10
 
         # Сложение двух CustomList одинаковой длины
-        self.assertEqual(custom_ls1 + custom_ls2, CustomList([6, 3, 10, 15]))
-        self.assertEqual(empty_cst_ls + empty_cst_ls, CustomList([]))
+
+        self.assertTrue(check_equal(custom_ls1 + custom_ls2,
+                                    CustomList([6, 3, 10, 15])))
+        self.assertTrue(check_equal(empty_cst_ls + empty_cst_ls,
+                                    CustomList([])))
 
         # Сложение двух CustomList разной длины
-        self.assertEqual(custom_ls1 + custom_ls3, CustomList([22, 1, 3, 7]))
-        self.assertEqual(custom_ls3 + custom_ls4, CustomList([19, 5]))
-        self.assertEqual(empty_cst_ls + custom_ls4, CustomList([2, 5]))
+        self.assertTrue(check_equal(custom_ls1 + custom_ls3,
+                                    CustomList([22, 1, 3, 7])))
+        self.assertTrue(check_equal(custom_ls3 + custom_ls4,
+                                    CustomList([19, 5])))
+        self.assertTrue(check_equal(empty_cst_ls + custom_ls4,
+                                    CustomList([2, 5])))
 
         # Сложение CustomList и list разной длины
-        self.assertEqual(custom_ls1 + ls1, CustomList([9, 8, 3, 7]))
-        self.assertEqual(ls1 + custom_ls1, CustomList([9, 8, 3, 7]))
+        self.assertTrue(check_equal(custom_ls1 + ls1,
+                                    CustomList([9, 8, 3, 7])))
+        self.assertTrue(check_equal(ls1 + custom_ls1,
+                                    CustomList([9, 8, 3, 7])))
 
-        self.assertEqual(empty_cst_ls + ls1, CustomList([4, 7]))
-        self.assertEqual(ls1 + empty_cst_ls, CustomList([4, 7]))
+        self.assertTrue(check_equal(empty_cst_ls + ls1,
+                                    CustomList([4, 7])))
+        self.assertTrue(check_equal(ls1 + empty_cst_ls,
+                                    CustomList([4, 7])))
 
-        self.assertEqual(custom_ls1 + ls3, CustomList([12, -4, 16, 7, 8]))
-        self.assertEqual(ls3 + custom_ls1, CustomList([12, -4, 16, 7, 8]))
+        self.assertTrue(check_equal(custom_ls1 + ls3,
+                                    CustomList([12, -4, 16, 7, 8])))
+        self.assertTrue(check_equal(ls3 + custom_ls1,
+                                    CustomList([12, -4, 16, 7, 8])))
 
         # Сложение CustomList и list одинаковой длины
-        self.assertEqual(custom_ls1 + ls2, CustomList([13, 10, 18, 19]))
-        self.assertEqual(ls2 + custom_ls1, CustomList([13, 10, 18, 19]))
+        self.assertTrue(check_equal(custom_ls1 + ls2,
+                                    CustomList([13, 10, 18, 19])))
+        self.assertTrue(check_equal(ls2 + custom_ls1,
+                                    CustomList([13, 10, 18, 19])))
 
-        self.assertEqual(empty_cst_ls + empty_ls, CustomList([]))
-        self.assertEqual(empty_ls + empty_cst_ls, CustomList([]))
+        self.assertTrue(check_equal(empty_cst_ls + empty_ls, CustomList([])))
+        self.assertTrue(check_equal(empty_ls + empty_cst_ls, CustomList([])))
 
         # Сложение CustomList и int
-        self.assertEqual(custom_ls1 + number, CustomList([15, 11, 13, 17]))
-        self.assertEqual(number + custom_ls1, CustomList([15, 11, 13, 17]))
+        self.assertTrue(check_equal(custom_ls1 + number,
+                                    CustomList([15, 11, 13, 17])))
+        self.assertTrue(check_equal(number + custom_ls1,
+                                    CustomList([15, 11, 13, 17])))
 
-        self.assertEqual(custom_ls3 + number, CustomList([27]))
-        self.assertEqual(number + custom_ls3, CustomList([27]))
+        self.assertTrue(check_equal(custom_ls3 + number, CustomList([27])))
+        self.assertTrue(check_equal(number + custom_ls3, CustomList([27])))
 
-        self.assertEqual(empty_cst_ls + number, CustomList([]))
-        self.assertEqual(number + empty_cst_ls, CustomList([]))
+        self.assertTrue(check_equal(empty_cst_ls + number, CustomList([])))
+        self.assertTrue(check_equal(number + empty_cst_ls, CustomList([])))
 
     def test_sub(self):
         custom_ls1 = CustomList([5, 1, 3, 7])
@@ -65,38 +90,56 @@ class TestCustomList(unittest.TestCase):
         number = 10
 
         # Разность двух CustomList одинаковой длины
-        self.assertEqual(custom_ls1 - custom_ls2, CustomList([4, -1, -4, -1]))
-        self.assertEqual(empty_cst_ls - empty_cst_ls, CustomList([]))
+        self.assertTrue(check_equal(custom_ls1 - custom_ls2,
+                                    CustomList([4, -1, -4, -1])))
+        self.assertTrue(check_equal(empty_cst_ls - empty_cst_ls,
+                                    CustomList([])))
 
         # Разность двух CustomList разной длины
-        self.assertEqual(custom_ls1 - custom_ls3, CustomList([-12, 1, 3, 7]))
-        self.assertEqual(custom_ls3 - custom_ls4, CustomList([15, -5]))
-        self.assertEqual(empty_cst_ls - custom_ls4, CustomList([-2, -5]))
-        self.assertEqual(custom_ls4 - empty_cst_ls, CustomList([2, 5]))
+        self.assertTrue(check_equal(custom_ls1 - custom_ls3,
+                                    CustomList([-12, 1, 3, 7])))
+        self.assertTrue(check_equal(custom_ls3 - custom_ls4,
+                                    CustomList([15, -5])))
+        self.assertTrue(check_equal(empty_cst_ls - custom_ls4,
+                                    CustomList([-2, -5])))
+        self.assertTrue(check_equal(custom_ls4 - empty_cst_ls,
+                                    CustomList([2, 5])))
 
         # Разность CustomList и list разной длины
-        self.assertEqual(custom_ls1 - ls1, CustomList([1, -6, 3, 7]))
-        self.assertEqual(ls1 - custom_ls1, CustomList([-1, 6, -3, -7]))
+        self.assertTrue(check_equal(custom_ls1 - ls1,
+                                    CustomList([1, -6, 3, 7])))
+        self.assertTrue(check_equal(ls1 - custom_ls1,
+                                    CustomList([-1, 6, -3, -7])))
 
-        self.assertEqual(empty_cst_ls - ls1, CustomList([-4, -7]))
-        self.assertEqual(ls1 - empty_cst_ls, CustomList([4, 7]))
+        self.assertTrue(check_equal(empty_cst_ls - ls1,
+                                    CustomList([-4, -7])))
+        self.assertTrue(check_equal(ls1 - empty_cst_ls,
+                                    CustomList([4, 7])))
 
-        self.assertEqual(custom_ls1 - ls3, CustomList([-2, 6, -10, 7, -8]))
-        self.assertEqual(ls3 - custom_ls1, CustomList([2, -6, 10, -7, 8]))
+        self.assertTrue(check_equal(custom_ls1 - ls3,
+                                    CustomList([-2, 6, -10, 7, -8])))
+        self.assertTrue(check_equal(ls3 - custom_ls1,
+                                    CustomList([2, -6, 10, -7, 8])))
 
         # Разность CustomList и list одинаковой длины
-        self.assertEqual(custom_ls1 - ls2, CustomList([-3, -8, -12, -5]))
-        self.assertEqual(ls2 - custom_ls1, CustomList([3, 8, 12, 5]))
+        self.assertTrue(check_equal(custom_ls1 - ls2,
+                                    CustomList([-3, -8, -12, -5])))
+        self.assertTrue(check_equal(ls2 - custom_ls1,
+                                    CustomList([3, 8, 12, 5])))
 
-        self.assertEqual(empty_cst_ls - empty_ls, CustomList([]))
-        self.assertEqual(empty_ls - empty_cst_ls, CustomList([]))
+        self.assertTrue(check_equal(empty_cst_ls - empty_ls, CustomList([])))
+        self.assertTrue(check_equal(empty_ls - empty_cst_ls, CustomList([])))
 
         # Разность CustomList и int
-        self.assertEqual(custom_ls1 - number, CustomList([-5, -9, -7, -3]))
-        self.assertEqual(number - custom_ls1, CustomList([5, 9, 7, 3]))
+        self.assertTrue(check_equal(custom_ls1 - number,
+                                    CustomList([-5, -9, -7, -3])))
+        self.assertTrue(check_equal(number - custom_ls1,
+                                    CustomList([5, 9, 7, 3])))
 
-        self.assertEqual(custom_ls3 - number, CustomList([7]))
-        self.assertEqual(number - custom_ls3, CustomList([-7]))
+        self.assertTrue(check_equal(custom_ls3 - number,
+                                    CustomList([7])))
+        self.assertTrue(check_equal(number - custom_ls3,
+                                    CustomList([-7])))
 
     def test_less_than(self):
         custom_ls1 = CustomList([1, 2, 3])
@@ -197,17 +240,6 @@ class TestCustomList(unittest.TestCase):
         self.assertFalse(custom_ls4 != custom_ls3)
         self.assertFalse(empty_ls != CustomList([]))
 
-    def test_str(self):
-        custom_ls1 = CustomList([1, 2, 3])
-        custom_ls2 = CustomList([8])
-        custom_ls3 = CustomList([-5, -14])
-        empty_ls = CustomList([])
-
-        self.assertEqual(str(custom_ls1), '[1, 2, 3] sum = 6')
-        self.assertEqual(str(custom_ls2), '[8] sum = 8')
-        self.assertEqual(str(custom_ls3), '[-5, -14] sum = -19')
-        self.assertEqual(str(empty_ls), '[] sum = 0')
-
     def test_comparison_invalid_type(self):
         custom_ls1 = CustomList([1, 2, 3])
         with self.assertRaises(TypeError):
@@ -240,6 +272,17 @@ class TestCustomList(unittest.TestCase):
             _ = custom_ls1 - {"a": 1}
         with self.assertRaises(TypeError):
             _ = "string" - custom_ls1
+
+    def test_str(self):
+        custom_ls1 = CustomList([1, 2, 3])
+        custom_ls2 = CustomList([8])
+        custom_ls3 = CustomList([-5, -14])
+        empty_ls = CustomList([])
+
+        self.assertEqual(str(custom_ls1), '[1, 2, 3] sum = 6')
+        self.assertEqual(str(custom_ls2), '[8] sum = 8')
+        self.assertEqual(str(custom_ls3), '[-5, -14] sum = -19')
+        self.assertEqual(str(empty_ls), '[] sum = 0')
 
 
 if __name__ == '__main__':
