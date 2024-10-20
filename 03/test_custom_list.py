@@ -4,10 +4,11 @@ from custom_list import CustomList
 
 
 def check_equal(ls1, ls2):
+    """ Функция для поэлементного сравнения CustomList"""
     if len(ls1) != len(ls2):
         return False
-    for i in range(len(ls1)):
-        if ls1[i] != ls2[i]:
+    for item1, item2 in zip(ls1, ls2):
+        if item1 != item2:
             return False
     return True
 
@@ -283,6 +284,46 @@ class TestCustomList(unittest.TestCase):
         self.assertEqual(str(custom_ls2), '[8] sum = 8')
         self.assertEqual(str(custom_ls3), '[-5, -14] sum = -19')
         self.assertEqual(str(empty_ls), '[] sum = 0')
+
+    def test_origin_lists_are_unchanged(self):
+        custom_ls1 = CustomList([1, 2, 3])
+        custom_ls2 = CustomList([8])
+        custom_ls3 = CustomList([-5, -14])
+        custom_ls4 = CustomList([6, 8, 10])
+        empty_ls = CustomList([])
+        ls = [2, 34, 11]
+        number = 42
+
+        _ = custom_ls1 + custom_ls2
+        self.assertTrue(check_equal(custom_ls1, CustomList([1, 2, 3])))
+        self.assertTrue(check_equal(custom_ls2, CustomList([8])))
+
+        _ = custom_ls3 - custom_ls4
+        self.assertTrue(check_equal(custom_ls3, CustomList([-5, -14])))
+        self.assertTrue(check_equal(custom_ls4, CustomList([6, 8, 10])))
+
+        _ = custom_ls1 + empty_ls
+        self.assertTrue(check_equal(empty_ls, CustomList([])))
+        self.assertTrue(check_equal(custom_ls1, CustomList([1, 2, 3])))
+
+        _ = ls + empty_ls
+        self.assertTrue(check_equal(empty_ls, CustomList([])))
+        _ = empty_ls - ls
+        self.assertTrue(check_equal(empty_ls, CustomList([])))
+        _ = number + empty_ls
+        self.assertTrue(check_equal(empty_ls, CustomList([])))
+        _ = empty_ls - number
+        self.assertTrue(check_equal(empty_ls, CustomList([])))
+
+        _ = custom_ls2 + ls
+        self.assertTrue(check_equal(custom_ls2, CustomList([8])))
+        _ = custom_ls2 - ls
+        self.assertTrue(check_equal(custom_ls2, CustomList([8])))
+
+        _ = number + custom_ls4
+        self.assertTrue(check_equal(custom_ls4, CustomList([6, 8, 10])))
+        _ = custom_ls4 - number
+        self.assertTrue(check_equal(custom_ls4, CustomList([6, 8, 10])))
 
 
 if __name__ == '__main__':
