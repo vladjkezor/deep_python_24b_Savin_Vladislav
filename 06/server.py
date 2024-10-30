@@ -5,11 +5,6 @@ import requests
 import json
 from collections import Counter
 
-URL = "http://ru.wikipedia.org/wiki/Python"
-URLS = [URL] * 500
-N_THREADS = 30
-WORK_SIZE = len(URLS) // N_THREADS
-
 
 class Worker(threading.Thread):
 
@@ -17,39 +12,37 @@ class Worker(threading.Thread):
         super().__init__()
         self.que = que
         self.top_k = top_k
-        self.count = 0
-
-    def fetch_url(self, url):
-        data = requests.get(url).text.split()
-        return dict(Counter(data).most_common(self.top_k))
 
     def run(self):
         while True:
-            url = self.que.get()
-            if url is None:
-                self.que.put(url)
-                break
-            self.fetch_url(url)
+            connection = self.que.get()
+            url = connection.recv(1024).decode()
+            data = requests.get(url).text.split()
+            print(f'{self.name} --- {Counter(data).most_common(self.top_k)}')
+            connection.close()
 
 
 class Server:
 
-    def __init__(self, n_workers, top_k, urls):
+    def __init__(self, n_workers, top_k):
         self.top_k = top_k
-
         self.que = queue.Queue()
-        for url in urls:
-            self.que.put(url)
-        self.que.put(None)
+        self.workers = [Worker(self.que, top_k) for _ in range(n_workers)]
 
-        self.workers = [Worker(self.que, self.top_k) for _ in range(n_workers)]
-
-    def start(self):
         for worker in self.workers:
             worker.start()
-        for worker in self.workers:
-            worker.join()
+
+    def start(self):
+        print("start server")
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            sock.bind(("localhost", 20_000))
+            sock.listen()
+
+            while True:
+                client, addr = sock.accept()
+                self.que.put(client)
 
 
-a = Server(N_THREADS, 4, URLS)
-a.start()
+serv = Server(5, 3)
+serv.start()
