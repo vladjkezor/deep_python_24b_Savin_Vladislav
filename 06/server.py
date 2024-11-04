@@ -1,9 +1,12 @@
 import threading
 import queue
 import socket
-import requests
 import json
+import re
+import argparse
 from collections import Counter
+from bs4 import BeautifulSoup
+import requests
 
 
 class Worker(threading.Thread):
@@ -20,26 +23,33 @@ class Worker(threading.Thread):
             if connection is None:
                 self.que.put(None)
                 break
+
             try:
                 url = connection.recv(1024).decode()
-                connection.sendall(self.fetch_and_process_url(url))
+                result = self.fetch_and_process_url(url)
+                connection.sendall(result)
+
             except Exception as e:
-                print(f"error {e}")
+                print(f"Error: {e}")
             finally:
                 connection.close()
+
                 with self.server.lock:
                     self.server.n_processed += 1
                     print(f'processed {self.server.n_processed} urls')
 
     def fetch_and_process_url(self, url):
         try:
-            data = requests.get(url).text.split()
-            top_words = dict(Counter(data).most_common(self.top_k))
-            return json.dumps(top_words).encode()
-
+            response = requests.get(url, timeout=5)
         except requests.RequestException as e:
-            print(f"Failed to fetch {url}: {e}")
+            with self.server.lock:
+                print(f"Failed to fetch {url}")
             return f'{e}'.encode()
+
+        text = BeautifulSoup(response.text, 'html.parser')
+        words = re.findall(r'\b\w+\b', text.get_text().lower())
+        top_words = dict(Counter(words).most_common(self.top_k))
+        return json.dumps(top_words, ensure_ascii=False).encode()
 
 
 class Server:
@@ -60,14 +70,22 @@ class Server:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             sock.bind(("localhost", 20_000))
             sock.listen()
+
             try:
                 while True:
-                    client, addr = sock.accept()
+                    client, _ = sock.accept()
                     self.que.put(client)
             except KeyboardInterrupt:
                 print('Server closed')
                 self.que.put(None)
 
 
-serv = Server(3, 3)
-serv.start()
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-w', '--workers', default=51, type=int)
+    parser.add_argument('-k', '--top_k', default=3, type=int)
+
+    args = parser.parse_args()
+
+    serv = Server(args.workers, args.top_k)
+    serv.start()

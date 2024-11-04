@@ -1,8 +1,9 @@
 import threading
 import queue
 import socket
+import argparse
 
-URL = "http://ru.wikipeia.org/"
+URL = "https://ru.wikipedia.org/wiki/Python"
 URLS = [URL] * 10
 
 
@@ -17,20 +18,26 @@ class ClientWorker(threading.Thread):
             if url is None:
                 self.que.put(None)
                 break
+            try:
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+                    sock.connect(('localhost', 20_000))
+                    sock.sendall(url.encode())
 
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
-                client.connect(('localhost', 20_000))
-                client.sendall(url.encode())
+                    data = sock.recv(1024).decode()
 
-                data = client.recv(1024).decode()
-                print(f' {url} {data}')
+                    print(f' {url} {data}')
+            except Exception as e:
+                print(f"Client error: {e}")
 
 
 class Client:
-    def __init__(self, urls, n_workers):
+    def __init__(self, n_workers, filename):
         self.que = queue.Queue()
-        for url in urls:
-            self.que.put(url)
+
+        with open(filename, 'r', encoding='utf-8') as urls:
+            for url in urls:
+                self.que.put(url.strip())
+
         self.que.put(None)
 
         self.workers = [ClientWorker(self.que) for _ in range(n_workers)]
@@ -38,4 +45,11 @@ class Client:
             worker.start()
 
 
-cl = Client(URLS, 40)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--workers', default=5, type=int)
+    parser.add_argument('--filename', default='urls.txt', type=str)
+
+    args = parser.parse_args()
+
+    client = Client(args.workers, args.filename)
