@@ -23,17 +23,14 @@ class Worker(threading.Thread):
             if connection is None:
                 self.que.put(None)
                 break
-
             try:
                 url = connection.recv(1024).decode()
                 result = self.fetch_and_process_url(url)
                 connection.sendall(result)
-
             except Exception as e:
                 print(f"Error: {e}")
             finally:
                 connection.close()
-
                 with self.server.lock:
                     self.server.n_processed += 1
                     print(f'processed {self.server.n_processed} urls')
@@ -45,9 +42,10 @@ class Worker(threading.Thread):
             with self.server.lock:
                 print(f"Failed to fetch {url}")
             return f'{e}'.encode()
-
+        # Обработка текста страницы
         text = BeautifulSoup(response.text, 'html.parser')
         words = re.findall(r'\b\w+\b', text.get_text().lower())
+
         top_words = dict(Counter(words).most_common(self.top_k))
         return json.dumps(top_words, ensure_ascii=False).encode()
 
@@ -65,7 +63,7 @@ class Server:
             worker.start()
 
     def start(self):
-        print("start server")
+        print("Start server")
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             sock.bind(("localhost", 12345))
@@ -83,7 +81,7 @@ class Server:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-w', '--workers', default=5, type=int)
-    parser.add_argument('-k', '--top_k', default=-1, type=int)
+    parser.add_argument('-k', '--top_k', default=3, type=int)
 
     args = parser.parse_args()
 
