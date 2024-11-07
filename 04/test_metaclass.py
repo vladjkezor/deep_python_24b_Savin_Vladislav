@@ -115,6 +115,27 @@ class TestMetaclass(unittest.TestCase):
 
         with self.assertRaises(AttributeError):
             _ = test_inst1.custom___str__()
+        # Проверка метода __str__
+        self.assertEqual(str(test_inst1), "Custom_by_metaclass")
+
+    def test_instance_independence(self):
+        # Создаем два экземпляра с разными значениями
+        test_inst1 = CustomClass(99)
+        test_inst2 = CustomClass(34)
+
+        self.assertEqual(test_inst1.custom_val, 99)
+        self.assertEqual(test_inst2.custom_val, 34)
+
+        # Проверка, что изменение test_inst1 не повлиет на test_inst2
+        test_inst1.val = 100
+        self.assertEqual(test_inst1.custom_val, 100)
+        self.assertEqual(test_inst2.custom_val, 34)
+
+        # Добавление нового атрибута
+        test_inst1.dynamic = "new value"
+        self.assertEqual(test_inst1.custom_dynamic, "new value")
+        with self.assertRaises(AttributeError):
+            _ = test_inst2.custom_dynamic
 
 
 if __name__ == '__main__':
