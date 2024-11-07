@@ -3,9 +3,6 @@ import queue
 import socket
 import argparse
 
-URL = "https://ru.wikipedia.org/wiki/Python"
-URLS = [URL] * 10
-
 
 class ClientWorker(threading.Thread):
     def __init__(self, que):
@@ -20,7 +17,7 @@ class ClientWorker(threading.Thread):
                 break
             try:
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-                    sock.connect(('localhost', 20_000))
+                    sock.connect(('localhost', 12345))
                     sock.sendall(url.encode())
 
                     data = sock.recv(1024).decode()

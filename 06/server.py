@@ -68,7 +68,7 @@ class Server:
         print("start server")
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            sock.bind(("localhost", 20_000))
+            sock.bind(("localhost", 12345))
             sock.listen()
 
             try:
@@ -82,8 +82,8 @@ class Server:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-w', '--workers', default=51, type=int)
-    parser.add_argument('-k', '--top_k', default=3, type=int)
+    parser.add_argument('-w', '--workers', default=5, type=int)
+    parser.add_argument('-k', '--top_k', default=-1, type=int)
 
     args = parser.parse_args()
 
