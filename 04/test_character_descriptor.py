@@ -115,7 +115,7 @@ class TestCharacter(unittest.TestCase):
         self.assertEqual(test_char.mana, 50)
         self.assertEqual(test_char.race, "Человек")
 
-        #valid value
+        # valid value
         test_char.name = 'New_Person4'
         test_char.health = 200
         test_char.mana = 130
