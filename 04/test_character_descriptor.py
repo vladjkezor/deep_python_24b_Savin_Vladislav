@@ -125,6 +125,20 @@ class TestCharacter(unittest.TestCase):
         self.assertEqual(test_char.mana, 130)
         self.assertEqual(test_char.race, "Эльф")
 
+        # invalid value
+        with self.assertRaises(TypeError) as _:
+            test_char.name = 3030
+        self.assertEqual(test_char.name, "New_Person4")
+        with self.assertRaises(TypeError) as _:
+            test_char.health = 'здоров'
+        self.assertEqual(test_char.health, 200)
+        with self.assertRaises(ValueError) as _:
+            test_char.mana = -1000
+        self.assertEqual(test_char.mana, 130)
+        with self.assertRaises(ValueError) as _:
+            test_char.race = 'полугуль'
+        self.assertEqual(test_char.race, "Эльф")
+
 
 if __name__ == '__main__':
     unittest.main()
