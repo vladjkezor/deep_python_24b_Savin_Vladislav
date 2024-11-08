@@ -20,7 +20,7 @@ class ClientWorker(threading.Thread):
                     sock.connect(('localhost', 12345))
                     sock.sendall(url.encode())
                     data = sock.recv(1024).decode()
-                    print(f' {url} {data}')
+                    print(f'{url} {data}')
             except Exception as e:
                 print(f"Client error: {e}")
 

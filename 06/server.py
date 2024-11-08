@@ -57,7 +57,8 @@ class Server:
         self.que = queue.Queue()
         self.n_processed = 0
         self.lock = threading.Lock()
-        self.workers = [Worker(self.que, top_k, self) for _ in range(n_workers)]
+        self.workers = [Worker(self.que, top_k, self)
+                        for _ in range(n_workers)]
 
         for worker in self.workers:
             worker.start()
