@@ -30,6 +30,15 @@ class TestServer(unittest.TestCase):
         expected = json.dumps({}).encode()
         self.assertEqual(result, expected)
 
+        # top_k больше чем количество уникальных слов
+        top_k = 100
+        test_worker = Worker(que, top_k, server)
+
+        result = test_worker.fetch_and_process_url(url)
+        expected = json.dumps({"python": 3, "fetch": 2, "url": 2, "test": 1,
+                               "and": 1, "process": 1, "again": 1}).encode()
+        self.assertEqual(result, expected)
+
     @patch('requests.get')
     @patch('builtins.print')
     def test_fetch_and_process_error(self, mock_print, mock_get):
