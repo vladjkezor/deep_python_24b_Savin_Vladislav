@@ -55,7 +55,7 @@ class TestClient(unittest.TestCase):
     @patch('client.ClientWorker')
     def test_client_starts_workers(self, mock_client_worker):
         filename = 'test_urls.txt'
-        with open(filename, 'w', encoding='utf-8') as f:
+        with open(filename, 'w', encoding='utf-8') as _:
             pass
         n_workers = 5
         client = Client(n_workers, filename)
