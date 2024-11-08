@@ -35,6 +35,8 @@ class Client:
         self.que.put(None)
 
         self.workers = [ClientWorker(self.que) for _ in range(n_workers)]
+
+    def start(self):
         for worker in self.workers:
             worker.start()
 
@@ -47,3 +49,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     client = Client(args.workers, args.filename)
+    client.start()
