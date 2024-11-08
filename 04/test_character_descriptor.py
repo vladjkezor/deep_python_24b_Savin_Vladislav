@@ -107,9 +107,9 @@ class TestCharacter(unittest.TestCase):
 
     def test_changing_value(self):
         test_char = Character(name="Джон Голт",
-                               health=100,
-                               mana=50,
-                               race="Человек")
+                              health=100,
+                              mana=50,
+                              race="Человек")
         self.assertEqual(test_char.name, "Джон Голт")
         self.assertEqual(test_char.health, 100)
         self.assertEqual(test_char.mana, 50)
@@ -124,6 +124,7 @@ class TestCharacter(unittest.TestCase):
         self.assertEqual(test_char.health, 200)
         self.assertEqual(test_char.mana, 130)
         self.assertEqual(test_char.race, "Эльф")
+
 
 if __name__ == '__main__':
     unittest.main()
