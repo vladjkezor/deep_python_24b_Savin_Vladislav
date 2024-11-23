@@ -139,6 +139,33 @@ class TestCharacter(unittest.TestCase):
             test_char.race = 'полугуль'
         self.assertEqual(test_char.race, "Эльф")
 
+    def test_interaction_between_instances(self):
+        test_char1 = Character(name="Person_1",
+                               health=100,
+                               mana=50,
+                               race="Человек")
+
+        test_char2 = Character(name="Person_2",
+                               health=50,
+                               mana=500,
+                               race="Орк")
+
+        test_char1.name = "New_person_1"
+        self.assertEqual(test_char1.name, 'New_person_1')
+        self.assertEqual(test_char2.name, 'Person_2')
+
+        test_char1.health = 5
+        self.assertEqual(test_char1.health, 5)
+        self.assertEqual(test_char2.health, 50)
+
+        test_char1.mana = 20
+        self.assertEqual(test_char1.mana, 20)
+        self.assertEqual(test_char2.mana, 500)
+
+        test_char1.race = 'Гном'
+        self.assertEqual(test_char1.race, "Гном")
+        self.assertEqual(test_char2.race, "Орк")
+
 
 if __name__ == '__main__':
     unittest.main()
