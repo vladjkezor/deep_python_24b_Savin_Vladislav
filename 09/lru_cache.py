@@ -1,3 +1,4 @@
+# pylint: disable=R0801
 class LRUCache:
 
     def __init__(self, limit=42):
