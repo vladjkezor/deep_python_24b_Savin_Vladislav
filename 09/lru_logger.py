@@ -1,40 +1,28 @@
 import logging
 import logging.config
+import json
 
-conf = {
-    'version': 1,
-    'formatters': {
-        "file_form": {
-            'format': "%(asctime)s\t%(levelname)s\t%(name)s\t%(message)s",
-        },
-    },
-    'handlers': {
-        'file_handler': {
-            'class': 'logging.FileHandler',
-            'level': 'INFO',
-            'formatter': 'file_form',
-            'filename': 'cache.log',
-            'mode': 'w'
-        },
-    },
-    'loggers': {
-        'lru_logger': {
-            'level': 'DEBUG',
-            'handlers': ['file_handler'],
-            'propagate': False
-        },
-    },
-}
+
+def create_logger():
+    with open('file_logger_config.json', 'r') as file:
+        config = json.load(file)
+    logging.config.dictConfig(config)
+    logger = logging.getLogger('lru_logger')
+    return logger
 
 
 def add_stream(logger):
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.DEBUG)
-    stream_form = logging.Formatter('%(process)d\t%(asctime)s\t%(levelname)s\t'
-                                    '%(name)s\t%(message)s')
+    stream_form = logging.Formatter('%(asctime)s - %(name)s - '
+                                    'line:%(lineno)s - %(levelname)s - '
+                                    '%(message)s',
+                                    datefmt='%d.%m.%y %H:%M:%S')
     stream_handler.setFormatter(stream_form)
     logger.addHandler(stream_handler)
 
-
-logging.config.dictConfig(conf)
-lru_logger = logging.getLogger('lru_logger')
+# lru_logger = create_logger()
+# lru_logger.info('twst')
+# add_stream(lru_logger)
+#
+# lru_logger.info('test2')
