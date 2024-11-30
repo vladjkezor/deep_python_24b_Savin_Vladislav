@@ -15,7 +15,7 @@ def add_stream(logger):
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.DEBUG)
     stream_form = logging.Formatter('%(asctime)s - %(name)s - '
-                                    'line:%(lineno)s - %(levelname)s - '
+                                    'line:%(lineno)s - %(levelname)-8s - '
                                     '%(message)s',
                                     datefmt='%d.%m.%y %H:%M:%S')
     stream_handler.setFormatter(stream_form)
