@@ -17,7 +17,7 @@
   },
   "loggers": {
     "lru_logger": {
-      "level": "INFO",
+      "level": "DEBUG",
       "handlers": [
         "file_handler"
       ],
