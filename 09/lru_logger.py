@@ -4,7 +4,7 @@ import json
 
 
 def create_logger():
-    with open('file_logger_config.json', 'r') as file:
+    with open('file_logger_config.json', 'r', encoding='utf-8') as file:
         config = json.load(file)
     logging.config.dictConfig(config)
     logger = logging.getLogger('lru_logger')
@@ -21,8 +21,11 @@ def add_stream(logger):
     stream_handler.setFormatter(stream_form)
     logger.addHandler(stream_handler)
 
-# lru_logger = create_logger()
-# lru_logger.info('twst')
-# add_stream(lru_logger)
-#
-# lru_logger.info('test2')
+
+def add_filter(logger):
+    def custom_filter(record):
+        """Отбрасывает записи с четным числом слов"""
+        return len(record.msg.split()) % 2 != 0
+
+    logger.addFilter(custom_filter)
+    return logger
