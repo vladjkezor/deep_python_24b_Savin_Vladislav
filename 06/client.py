@@ -27,18 +27,18 @@ class ClientWorker(threading.Thread):
 
 class Client:
     def __init__(self, n_workers, filename):
-        self.que = queue.Queue()
-
-        with open(filename, 'r', encoding='utf-8') as urls:
-            for url in urls:
-                self.que.put(url.strip())
-        self.que.put(None)
-
+        self.que = queue.Queue(maxsize=20)
+        self.filename = filename
         self.workers = [ClientWorker(self.que) for _ in range(n_workers)]
 
     def start(self):
         for worker in self.workers:
             worker.start()
+
+        with open(self.filename, 'r', encoding='utf-8') as urls:
+            for url in urls:
+                self.que.put(url.strip())
+        self.que.put(None)
 
 
 if __name__ == "__main__":
