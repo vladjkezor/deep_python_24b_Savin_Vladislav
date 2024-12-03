@@ -39,13 +39,16 @@ class TestClient(unittest.TestCase):
         print_call = unittest.mock.call('Client error: Connection error')
         self.assertEqual(mock_print.call_args, print_call)
 
-    def test_client_url_reading(self):
+    @patch('client.ClientWorker')
+    def test_client_url_reading(self, _):
         filename = 'test_urls.txt'
         with open(filename, 'w', encoding='utf-8') as f:
             f.write('test1.com\n')
             f.write('test2.com\n')
 
         client = Client(2, filename)
+        client.start()
+
         # В очереди должно быть 2 ссылки и None
         self.assertEqual(client.que.qsize(), 3)
         self.assertEqual(client.que.get_nowait(), 'test1.com')
