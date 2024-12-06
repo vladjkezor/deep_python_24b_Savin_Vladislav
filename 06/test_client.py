@@ -78,6 +78,22 @@ class TestClient(unittest.TestCase):
         self.assertEqual(client.que.qsize(), 1)
         self.assertEqual(client.que.get_nowait(), None)
 
+    @patch('socket.socket')
+    def test_client_send_urls(self, mock_sock):
+        filename = 'test_urls.txt'
+        urls = ['test1.com', 'test2.com', 'test3.com', 'test4.com', 'test5.com']
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write('\n'.join(urls))
+
+        n_workers = 2
+        client = Client(n_workers, filename)
+        mock_sock_inst = mock_sock.return_value.__enter__.return_value
+        with patch('builtins.print'):
+            client.start()
+        # Проверка, что все урлы отправлены
+        send_calls = [unittest.mock.call(url.encode()) for url in urls]
+        self.assertEqual(mock_sock_inst.sendall.mock_calls, send_calls)
+
 
 if __name__ == '__main__':
     unittest.main()
