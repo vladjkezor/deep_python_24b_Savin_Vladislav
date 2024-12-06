@@ -146,6 +146,35 @@ class TestServer(unittest.TestCase):
                  unittest.mock.call(None)]
         self.assertEqual(server.que.put.call_args_list, calls)
 
+    @patch('server.Worker.fetch_and_process_url')
+    @patch('socket.socket')
+    def test_server_recieves_and_processes_urls(self, mock_sock, mock_fetch):
+        # Заглушка отправки клиентом урлов
+        mock_client = MagicMock()
+        mock_client.recv.side_effect = [
+            b'test1.com',
+            b'test2.com',
+            b'test2.com'
+        ]
+        mock_fetch.side_effect = [
+            b'{"word1": 3}',
+            b'{"word2": 2}',
+            b'{"word3": 2}',
+        ]
+
+        mock_sock_inst = mock_sock.return_value.__enter__.return_value
+        mock_sock_inst.accept.return_value =  (mock_client, 'mock_address')
+
+        server = Server(2,3)
+        server.start()
+
+        fetch_calls = [
+            unittest.mock.call('test1.com'),
+            unittest.mock.call('test2.com'),
+            unittest.mock.call('test3.com')
+        ]
+        # self.assertEqual([], fetch_calls)
+
 
 if __name__ == '__main__':
     unittest.main()
