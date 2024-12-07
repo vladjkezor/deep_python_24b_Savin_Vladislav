@@ -40,12 +40,13 @@ class Client:
                 self.que.put(url.strip())
         self.que.put(None)
 
-        for worker in self.workers:
+        # pylint ругается на то, что такая же строчка есть в другом файле...
+        for worker in self.workers:     # pylint: disable=R0801
             worker.join()
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser()      # pylint: disable=R0801
     parser.add_argument('--workers', default=5, type=int)
     parser.add_argument('--filename', default='urls.txt', type=str)
 

@@ -76,7 +76,6 @@ class Server:
             except KeyboardInterrupt:
                 print('Server closed')
                 self.que.put(None)
-
             for worker in self.workers:
                 worker.join()
 
