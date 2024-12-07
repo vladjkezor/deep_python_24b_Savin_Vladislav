@@ -6,9 +6,13 @@ import aiohttp
 from bs4 import BeautifulSoup
 
 
-def read_urls(filename):
+async def read_urls(filename, que):
     with open(filename, 'r', encoding='utf-8') as file:
-        return [line.strip() for line in file if line.strip()]
+        for line in file:
+            url = line.strip()
+            if url:
+                await que.put(url)
+        await que.put(None)
 
 
 async def fetch_url(url, session):
@@ -19,6 +23,8 @@ async def fetch_url(url, session):
             words = re.findall(r'\b\w+\b', soup.get_text().lower())
             top_words = dict(Counter(words).most_common(5))
             print(f'{url}, {top_words}')
+    except asyncio.TimeoutError:
+        print(f'Timeout while fetching {url}')
     except Exception as e:
         print(f'Failed to fetch {url}, error: {e}')
 
@@ -34,20 +40,23 @@ async def worker(que, session):
 
 
 async def fetch_batch_urls(n_workers, filename):
-    urls = read_urls(filename)
-    que = asyncio.Queue()
-    for url in urls:
-        await que.put(url)
-    await que.put(None)
+    que = asyncio.Queue(maxsize=n_workers * 2)
 
-    async with aiohttp.ClientSession() as session:
+    timeout = aiohttp.ClientTimeout(
+        total=10,
+        connect=5,
+        sock_connect=5,
+        sock_read=5
+    )
+    async with aiohttp.ClientSession(timeout=timeout) as session:
         tasks = [worker(que, session) for _ in range(n_workers)]
-        await asyncio.gather(*tasks)
+
+        await asyncio.gather(*tasks, read_urls(filename, que))
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--workers', default=50, type=int)
+    parser.add_argument('--workers', default=10, type=int)
     parser.add_argument('--filename', default='urls.txt', type=str)
     args = parser.parse_args()
 
