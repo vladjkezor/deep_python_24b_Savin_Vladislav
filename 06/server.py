@@ -60,11 +60,11 @@ class Server:
         self.workers = [Worker(self.que, top_k, self)
                         for _ in range(n_workers)]
 
-        for worker in self.workers:
-            worker.start()
-
     def start(self):
         print("Start server")
+        for worker in self.workers:
+            worker.start()
+            
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             sock.bind(("localhost", 12345))
@@ -77,6 +77,9 @@ class Server:
             except KeyboardInterrupt:
                 print('Server closed')
                 self.que.put(None)
+
+            for worker in self.workers:
+                worker.join()
 
 
 if __name__ == "__main__":

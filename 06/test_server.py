@@ -146,34 +146,47 @@ class TestServer(unittest.TestCase):
                  unittest.mock.call(None)]
         self.assertEqual(server.que.put.call_args_list, calls)
 
-    @patch('server.Worker.fetch_and_process_url')
+    @patch('builtins.print')
     @patch('socket.socket')
-    def test_server_recieves_and_processes_urls(self, mock_sock, mock_fetch):
-        # Заглушка отправки клиентом урлов
-        mock_client = MagicMock()
-        mock_client.recv.side_effect = [
-            b'test1.com',
-            b'test2.com',
-            b'test2.com'
-        ]
+    @patch('server.Worker.fetch_and_process_url')
+    def test_server_receives_and_processes_urls(self, mock_fetch, mock_sock, _):
         mock_fetch.side_effect = [
-            b'{"word1": 3}',
+            b'{"word1": 4}',
             b'{"word2": 2}',
-            b'{"word3": 2}',
+            b'{"word3": 2}'
         ]
+        mock_sock_instance = mock_sock.return_value.__enter__.return_value
+        mock_client1 = MagicMock()
+        mock_client2 = MagicMock()
+        mock_client3 = MagicMock()
 
-        mock_sock_inst = mock_sock.return_value.__enter__.return_value
-        mock_sock_inst.accept.return_value =  (mock_client, 'mock_address')
+        mock_sock_instance.accept.side_effect = [
+            (mock_client1, 'address1'),
+            (mock_client2, 'address2'),
+            (mock_client3, 'address3'),
+            KeyboardInterrupt()
+        ]
+        mock_client1.recv.return_value = b'test1.com'
+        mock_client2.recv.return_value = b'test2.com'
+        mock_client3.recv.return_value = b'test3.com'
 
-        server = Server(2,3)
+        server = Server(2, 1)
         server.start()
 
         fetch_calls = [
             unittest.mock.call('test1.com'),
             unittest.mock.call('test2.com'),
-            unittest.mock.call('test3.com')
+            unittest.mock.call('test3.com'),
         ]
-        # self.assertEqual([], fetch_calls)
+        self.assertEqual(mock_fetch.mock_calls, fetch_calls)
+
+        mock_client1.sendall.assert_called_once_with(b'{"word1": 4}')
+        mock_client2.sendall.assert_called_once_with(b'{"word2": 2}')
+        mock_client3.sendall.assert_called_once_with(b'{"word3": 2}')
+
+        self.assertEqual(mock_client1.close.call_count, 1)
+        self.assertEqual(mock_client1.close.call_count, 1)
+        self.assertEqual(mock_client1.close.call_count, 1)
 
 
 if __name__ == '__main__':
