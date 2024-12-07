@@ -64,7 +64,6 @@ class Server:
         print("Start server")
         for worker in self.workers:
             worker.start()
-            
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             sock.bind(("localhost", 12345))

@@ -40,6 +40,9 @@ class Client:
                 self.que.put(url.strip())
         self.que.put(None)
 
+        for worker in self.workers:
+            worker.join()
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
