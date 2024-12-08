@@ -10,10 +10,13 @@ def profile_deco(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         pr.enable()
-        result = func(*args, *kwargs)
-        pr.disable()
-
-        return result
+        try:
+            return func(*args, *kwargs)
+        except Exception as e:
+            print(f'Error {e} during {func.__name__} work')
+            return None
+        finally:
+            pr.disable()
 
     def print_stat():
         s = io.StringIO()
