@@ -79,20 +79,39 @@ class TestClient(unittest.TestCase):
         self.assertEqual(client.que.get_nowait(), None)
 
     @patch('socket.socket')
-    def test_client_send_urls(self, mock_sock):
+    def test_client_send_urls_with_different_n_workers(self, mock_sock):
         filename = 'test_urls.txt'
-        urls = ['test1.com', 'test2.com', 'test3.com', 'test4.com', 'test5.com']
+        urls = [f'test{i}.com' for i in range(20)]
         with open(filename, 'w', encoding='utf-8') as f:
             f.write('\n'.join(urls))
 
-        n_workers = 2
+        for n_workers in [1, 3, 5]:
+            client = Client(n_workers, filename)
+            mock_sock_inst = mock_sock.return_value.__enter__.return_value
+
+            with patch('builtins.print'):
+                client.start()
+
+            expected_calls = [unittest.mock.call(url.encode()) for url in urls]
+            self.assertEqual(mock_sock_inst.sendall.mock_calls, expected_calls)
+            mock_sock_inst.sendall.reset_mock()
+
+    @patch('socket.socket')
+    def test_client_send_urls_zero_workers(self, mock_sock):
+        filename = 'test_urls.txt'
+        urls = [f'test{i}.com' for i in range(5)]
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write('\n'.join(urls))
+
+        n_workers = 0
         client = Client(n_workers, filename)
         mock_sock_inst = mock_sock.return_value.__enter__.return_value
+
         with patch('builtins.print'):
             client.start()
-        # Проверка, что все урлы отправлены
-        send_calls = [unittest.mock.call(url.encode()) for url in urls]
-        self.assertEqual(mock_sock_inst.sendall.mock_calls, send_calls)
+
+        expected_calls = []
+        self.assertEqual(mock_sock_inst.sendall.mock_calls, expected_calls)
 
 
 if __name__ == '__main__':

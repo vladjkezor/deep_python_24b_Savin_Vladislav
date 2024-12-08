@@ -27,7 +27,7 @@ class ClientWorker(threading.Thread):
 
 class Client:
     def __init__(self, n_workers, filename):
-        self.que = queue.Queue(maxsize=20)
+        self.que = queue.Queue(maxsize=n_workers * 2)
         self.filename = filename
         self.workers = [ClientWorker(self.que) for _ in range(n_workers)]
 
@@ -41,12 +41,12 @@ class Client:
         self.que.put(None)
 
         # pylint ругается на то, что такая же строчка есть в другом файле...
-        for worker in self.workers:     # pylint: disable=R0801
+        for worker in self.workers:  # pylint: disable=R0801
             worker.join()
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()      # pylint: disable=R0801
+    parser = argparse.ArgumentParser()  # pylint: disable=R0801
     parser.add_argument('--workers', default=5, type=int)
     parser.add_argument('--filename', default='urls.txt', type=str)
 

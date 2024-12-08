@@ -54,7 +54,7 @@ class Server:
 
     def __init__(self, n_workers, top_k):
         self.top_k = top_k
-        self.que = queue.Queue(maxsize=20)
+        self.que = queue.Queue(maxsize=n_workers * 2)
         self.n_processed = 0
         self.lock = threading.Lock()
         self.workers = [Worker(self.que, top_k, self)
