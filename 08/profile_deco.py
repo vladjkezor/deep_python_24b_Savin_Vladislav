@@ -11,10 +11,8 @@ def profile_deco(func):
     def wrapper(*args, **kwargs):
         pr.enable()
         try:
-            return func(*args, *kwargs)
-        except Exception as e:
-            print(f'Error {e} during {func.__name__} work')
-            return None
+            result = func(*args, *kwargs)
+            return result
         finally:
             pr.disable()
 
