@@ -57,7 +57,7 @@ class TestCustomJson(unittest.TestCase):
             dumps("not a dict")
 
     def test_dumps_invalid_key(self):
-        with self.assertRaises(TypeError) as e:
+        with self.assertRaises(TypeError):
             dumps({216: "value1"})
         with self.assertRaises(TypeError):
             dumps({42.0: "value1"})
