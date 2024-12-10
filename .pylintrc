@@ -7,5 +7,3 @@ disable=
     W0718
 [FORMAT]
 max-line-length=80
-
-unsafe-load-any-extensions=yes
