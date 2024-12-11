@@ -22,6 +22,10 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+        
+      - name: Build C-ext
+        working-directory: ./10
+        run: python setup.py install
 
       - name: Check flake8
         run: flake8 .
