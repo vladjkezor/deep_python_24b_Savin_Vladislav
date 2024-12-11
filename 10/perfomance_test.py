@@ -47,5 +47,5 @@ def test_performance(n_elements):
 
 
 if __name__ == "__main__":
-    N_ELEMs = 1000000
-    test_performance(1000000)
+    N_ELEMS = 1000000
+    test_performance(N_ELEMS)
