@@ -1,4 +1,3 @@
-# pylint: disable-all
 import unittest
 
 from custom_json import loads, dumps
