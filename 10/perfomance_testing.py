@@ -9,7 +9,7 @@ def create_json(n_elements):
     fake = Faker()
     data = "{"
     for i in range(n_elements - 1):
-        data += f'"key{i+1}": ' + (
+        data += f'"key{i + 1}": ' + (
             f'"{fake.first_name()}", '
             if i % 2 == 0
             else f"{fake.random_number()}, "
@@ -22,7 +22,7 @@ def test_performance(n_elements):
     data = create_json(n_elements)
     t0 = time()
     original_loads_res = json.loads(data)
-    print(f"json.loads time --- {time()-t0}")
+    print(f"json.loads time --- {time() - t0}")
 
     t0 = time()
     custom_loads_res = custom_json.loads(data)
@@ -47,5 +47,5 @@ def test_performance(n_elements):
 
 
 if __name__ == "__main__":
-    N_ELEMS = 1000000
-    test_performance(N_ELEMS)
+    N_ELEMENTS = 1000000
+    test_performance(N_ELEMENTS)
